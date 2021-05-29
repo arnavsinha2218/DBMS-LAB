@@ -1,0 +1,14 @@
+select distinct P.pname from Parts P, Catalog c where P.pid=C.pid;
+
+select S.sname from SUPPLIERS S where not exists (select P.pid from PARTS P where not exists (select C.sid from CATALOG C where C.sid = S.sid and C.pid = P.pid));
+
+select S.sname from SUPPLIERS S where not exists (select P.pid from PARTS P where P.color = 'Red' and (not exists (select C.sid from CATALOG C where C.sid = S.sid and C.pid = P.pid)));
+
+select P.pname from PARTS P, CATALOG C, SUPPLIERS S where P.pid = C.pid and C.sid = S.sid and S.sname = 'Acme Widget' and not exists (select * from CATALOG C1, SUPPLIERS S1 where P.pid = C1.pid and C1.sid = S1.sid and S1.sname <> 'Acme Widget');
+
+select distinct c.sid from Catalog  c where c.cost >(select avg(ca.cost) from Catalog ca where ca.pid=c.pid);
+
+
+select s.sname ,p.pid from Suppliers s, Catalog c, Parts p where s.sid=c.sid and c.pid =p.pid and c.cost=(select max(ca.cost) from catalog ca where ca.pid=p.pid);
+
+select distinct c.sid from catalog c where not exists (select * from PARTS P where P.pid = C.pid and P.color <> 'Red')

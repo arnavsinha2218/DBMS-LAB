@@ -1,0 +1,61 @@
+Find the names of all Juniors (level = JR) who are enrolled in a class taught by Harish.
+select distinct s.sname
+from student s, class c, enrolled e, faculty f
+where s.snum = e.snum and e.cname = c.cname and c.fid = f.fid and
+f.fname ='Harish' and s.lvl ='Jr';
+
+Find the names of all classes that either meet in room R128 or have five or more Students enrolled.
+select C.cname
+from Class C
+where C.room = 'R128'
+or C.cname in (select E.cname
+        FROM Enrolled E
+        GROUP BY E.cname
+        HAVING COUNT(E.snum) >= 5);
+
+
+
+Find the names of all students who are enrolled in two classes that meet at the same time.
+select distinct S.sname
+from Student S
+where S.snum in (select E1.snum
+            from Enrolled E1, Enrolled E2, Class C1, Class C2
+            where E1.snum = E2.snum AND E1.cname <> E2.cname
+            AND E1.cname = C1.cname
+            AND E2.cname = C2.cname AND C1.metts_at = C2.metts_at);
+
+Find the names of faculty members who teach in every room in which some class is taught.
+select distinct F.fname
+from Faculty F,Class C
+where F.fid=C.fid 
+group by C.fid
+having count(distinct room) = 5;
+
+
+
+Find the names of faculty members for whom the combined enrollment of the courses that they teach is less than five.
+select distinct F.fname
+from Faculty F
+where 5 > (select COUNT(E.snum)
+from Class C, Enrolled E
+where C.cname = E.cname
+and C.fid = F.fid);
+
+Find the names of students who are not enrolled in any class. 
+
+select distinct S.sname
+from Student S
+where S.snum NOT IN (select E.snum
+from Enrolled E );
+
+For each age value that appears in Students, find the level value that appears most often. For example, if there are more FR level students aged 18 than SR, JR, or SO students aged 18, you should print the pair (18, FR).
+select S.age, S.lvl
+from Student S
+group by S.age, S.lvl
+having S.lvl IN (select S1.lvl from Student S1
+      where S1.age = S.age
+group by S1.lvl, S1.age
+having COUNT(S1.snum) >= ALL (select COUNT(S2.snum)
+from Student S2
+where s1.age = S2.age
+group by S2.lvl, S2.age));

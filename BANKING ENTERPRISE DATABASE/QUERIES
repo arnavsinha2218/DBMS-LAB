@@ -1,0 +1,8 @@
+1. Find all the customers who have at least two accounts at the main brach.
+   select CustomerName from Borrower B, Accounts A where B.LoanNumber=A.AccNo and A.BranchName="SBI_ResidencyRoad" group by B.CustomerName having count(B.CustomerName) >= 2;
+ 
+2. Find all the customers who have an account at all the branches located in a specific city.
+   select B.CustomerName from Accounts A, Branch BR, Borrower B where BR.BranchName=A.BranchName and A.AccNo=B.LoanNumber and BR.BranchCity="Bangalore" group by B.CustomerName having count(distinct BR.BranchName)=(select count(BranchName) from Branch where BranchCity="Bangalore");
+
+3. Demonstrate how you delete all account tuples at every branch located in a specific city.
+   delete from Accounts where BranchName in(select BranchName from Branch where BranchCity="Bangalore");

@@ -1,0 +1,31 @@
+Produce a list of text books (include Course #, Book-ISBN, Book-title) in the alphabetical order for courses offered by the 'CS' department that use more than two books.*/
+	
+
+SELECT c.courseno,t.book_isbn,t.book_title
+FROM course c,book_adoption ba,text t
+WHERE c.courseno=ba.courseno
+AND ba.book_isbn=t.book_isbn
+AND c.dept='CSE'
+AND 2<(
+SELECT COUNT(book_isbn)
+FROM book_adoption b
+WHERE c.courseno=b.courseno)
+ORDER BY t.book_title;
+
+
+List any department that has all its adopted books published by a specific publisher.*/
+
+SELECT DISTINCT c.dept
+FROM course c
+WHERE c.dept IN
+     ( SELECT c.dept
+     FROM course c,book_adoption b,text t
+     WHERE c.courseno=b.courseno
+     AND t.book_isbn=b.book_isbn
+     AND t.publisher='HALL INDIA')
+     AND c.dept NOT IN
+     (SELECT c.dept
+     FROM course c,book_adoption b,text t
+     WHERE c.courseno=b.courseno
+     AND t.book_isbn=b.book_isbn
+     AND t.publisher != 'HALL INDIA');

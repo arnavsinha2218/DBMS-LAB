@@ -1,0 +1,5 @@
+1.select cname, count(*), avg(order_amt) from customer right join orders on customer.cust_no = orders.cust_no group by customer.cname;
+
+2.select order_no from warehouse as w,shipment as s where w.warehouse_no=s.warehouse_no and city="Bangalore";
+
+3.delete from item where item_no = 5005;

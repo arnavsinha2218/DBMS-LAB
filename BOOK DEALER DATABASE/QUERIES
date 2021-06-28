@@ -1,0 +1,5 @@
+1.select * from author right join catalog on author.AuthorID=catalog.AuthorID where year > 2000 group by catalog.AuthorID having count(*)>2;
+
+2.select a_name from author inner join catalog on author.AuthorID=catalog.AuthorID and bookID in (select bookID from order_details where quantity = (select max(quantity) from order_details));
+
+3.update catalog set price=1.1*price where publisherID in (select publisherID from publisher where p_name="EEE");
